@@ -9,98 +9,159 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <form #form name="matriz">
-            <table style="text-align: center">
-                    <tbody>
-                      <tr>
-                        <td>
-                          <input type="text" name="a11" >
-                          <span>
-                            <i> x1 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a12" >
-                          <span>
-                            <i> x2 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a13" >
-                          <span>
-                            <i> x3 = </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a14" >
-                          
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input type="text" name="a21" >
-                          <span>
-                            <i> x1 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a22" >
-                          <span>
-                            <i> x2 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a23" >
-                          <span>
-                            <i> x3 = </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a24" >
-                          
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input type="text" name="a31" >
-                          <span>
-                            <i> x1 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a32" >
-                          <span>
-                            <i> x2 + </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a33" >
-                          <span>
-                            <i> x3 = </i>
-                          </span>
-                        </td>
-              
-                        <td>
-                          <input type="text" name="a34" >
-                          
-                        </td>
-                      </tr>
-              
-                    </tbody>
-                  </table>
 
-                  <button onClick="main()">
-                    <label> Resultado </>
-                  </button>
+  <div style="text-align: center;padding-bottom: 50px">
+    <h2> Metodo de Gauss Jacobi</h2>
+    <span> Calculo Numerico</span>
+  </div>
+
+  <div class="extras" style="text-align: center">
+    <label> Epysilon:  </label>
+    <input id="epsilon" type="text" >
+
+    <div class="chuteInicial">
+      <h3><strong>Chute Inicial</strong></h3>
+      <form name="initialValue">
+          <table style="margin: 0px auto;">
+              <tr>
+                <td> 
+                  <input type="text">
+                </td>
+              </tr>
+              <tr> 
+                <td> 
+                  <input type="text"> 
+                </td>
+              </tr>
+              <tr>
+                <td> 
+                  <input type="text"> 
+                </td>
+              </tr>
+            </table>
+      </form>
+      
+    </div>
+
+  </div>
+
+  <div class="main-table" style="padding-top: 50px">
+      <form name="matriz">
+          <table style="font-size: 2em;margin: 0px auto;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" name="a11" >
+                        <span>
+                          <i> x1 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a12" >
+                        <span>
+                          <i> x2 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a13" >
+                        <span>
+                          <i> x3 = </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a14" >
+                        
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" name="a21" >
+                        <span>
+                          <i> x1 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a22" >
+                        <span>
+                          <i> x2 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a23" >
+                        <span>
+                          <i> x3 = </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a24" >
+                        
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="text" name="a31" >
+                        <span>
+                          <i> x1 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a32" >
+                        <span>
+                          <i> x2 + </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a33" >
+                        <span>
+                          <i> x3 = </i>
+                        </span>
+                      </td>
+            
+                      <td>
+                        <input type="text" name="a34" >
+                        
+                      </td>
+                    </tr>
+            
+                  </tbody>
+                </table>
+      </form>
+
+  </div>
+
+
+  <div style="text-align: center;padding-top: 50px">
+    <button onClick="main()" style="font-size: 1.5em">
+      <label> Resultado </>
+    </button>
+  </div>
+
+  <div style="padding-top: 20px">
+    <form name="response"> 
+      <table style="margin: 0px auto;">
+        <tbody>
+          <tr>
+            <td> <input type="text" readonly> </td>
+          </tr>
+          <tr>
+            <td> <input type="text" readonly></td>
+          </tr>
+          <tr> 
+            <td> <input type="text" readonly></td>
+          </tr>
+        </tbody>
+      </table>
     </form>
+  </div>
+    
 
 </body>
 </html>

@@ -1,18 +1,85 @@
-var sizeRows = 3;
-var sizeCols = 4;
-var valuesInitial = [0.7,-1.6,0.6];
+var SIZE_ROWS = 3;
+var SIZE_COLS = 4;
+var DEFAULT_INITIAL_VALUES = [0,0,0];
+var DEFAULT_EPSILON = 0.05;
+var EPYSILON;
 
 const INPUT_MATRIZ = "matriz";
+const INITIAL_VALUES = "initialValue";
+const RESPONSE_VALUES = "response";
 
+/**
+ * Metodo Main
+ */
 function main() {
     let matriz = this.generateMatrix();
-    
-    let vetor  = this.matchIteration(matriz);
-    
+    let valuesInitial = this.getAllValuesOfForm(INITIAL_VALUES);
+    valuesInitial = this.htmlColletionFromArray(valuesInitial);
+    this.EPYSILON = this.epsilon();
+    let vetor;
+
+    if (!isValid(valuesInitial)) {
+        valuesInitial = DEFAULT_INITIAL_VALUES;
+    }
+
+    do {
+        if (vetor != undefined) {
+            valuesInitial = vetor;
+        }
+        vetor = this.matchIteration(matriz,valuesInitial);
+    } while (this.stopCriterion(valuesInitial,vetor));
+
+    this.defineResponse(vetor);
+}
+
+/**
+ * Define a saida da respota final
+ * @param {*} vetor array contendo resposta final
+ */
+function defineResponse(vetor){
+    let tableHTML = this.getAllValuesOfForm(RESPONSE_VALUES);
+
+    for (let i = 0; i < vetor.length; i++) {
+        tableHTML[i].value = vetor[i];
+    }
 
 }
 
-function matchIteration(matrix){
+/**
+ * valida o criterio de parada
+ * @param {*} beforeVector array anterior
+ * @param {*} afterVector array atual
+ */
+function stopCriterion(beforeVector, afterVector){
+
+    let newVector = [];
+
+    for (let i = 0; i < beforeVector.length; i++) {
+        let x = (beforeVector[i] - afterVector[i])
+        newVector.push(x < 0 ? -x : x);
+    }
+
+    let d = this.biggerValue(newVector) / this.biggerValue(afterVector);
+
+    return d > this.EPYSILON;
+}
+
+function biggerValue(vector){
+    let biggerValue = 0;
+
+    vector.forEach( value => {
+        biggerValue = value > biggerValue ? value : biggerValue;
+    });
+
+    return biggerValue;
+}
+
+/**
+ * Obtem o x da linha na iteração
+ * @param {*} matrix matrix de input
+ * @param {*} values valores iniciais dependendo da iteração
+ */
+function matchIteration(matrix,values){
     let result = [];
 
     for(var i = 0; i < matrix.length; i++){
@@ -29,7 +96,7 @@ function matchIteration(matrix){
                 continue;
             }
     
-            sub.push(matrix[i][j] * this.valuesInitial[j]);
+            sub.push(matrix[i][j] * values[j]);
         }
 
         for(let i = 0 ; i < sub.length ; i++){
@@ -40,11 +107,12 @@ function matchIteration(matrix){
             }
         }
         
-        result.push((1/elementDiagonal) * res);
+        result.push(parseFloat((1/elementDiagonal) * res).toFixed(4));
     }
 
     return result;
 }
+
 /**
  * Popula toda a matrix de acordo com a matrix de entrada do usuario
  */
@@ -65,11 +133,11 @@ function generateMatrix(){
 }
 
 function transformArrayInMatrix(array){
-    let matriz = createMatrix(sizeRows,sizeCols); // matriz com tamanho {size}
+    let matriz = createMatrix(SIZE_ROWS,SIZE_COLS); // matriz com tamanho {size}
     let xCount = 0;
 
-    for (let i = 0; i < sizeRows; i++) {
-        for (let j = 0; j < sizeCols; j++) {
+    for (let i = 0; i < SIZE_ROWS; i++) {
+        for (let j = 0; j < SIZE_COLS; j++) {
             matriz[i][j] = parseInt(array[xCount == array.length ? xCount : xCount++]);
         }  
     }
@@ -77,6 +145,10 @@ function transformArrayInMatrix(array){
     return matriz;
 }
 
+/**
+ * Valida em modulo se satisfaz o criterio de linha (a convergencia)
+ * @param {*} matrix matrix de input para teste
+ */
 function toSatisfyCriterion(matrix){
 
     let reduceMatrix = this.withdrawResult(matrix);//Matriz sem os resultados
@@ -86,9 +158,9 @@ function toSatisfyCriterion(matrix){
         let elementMainDiagonal;
         for (let j = 0; j < reduceMatrix[i].length; j++) {
             if (i != j) {
-                sum += reduceMatrix[i][j];
+                sum += reduceMatrix[i][j] < 0 ? - reduceMatrix[i][j] : reduceMatrix[i][j];
             }else{
-                elementMainDiagonal = reduceMatrix[i][j];
+                elementMainDiagonal = reduceMatrix[i][j] < 0 ? - reduceMatrix[i][j] : reduceMatrix[i][j];
             }
         }
         if (elementMainDiagonal < sum) {
@@ -99,9 +171,12 @@ function toSatisfyCriterion(matrix){
     return true;
 }
 
-
+/**
+ * Retorna uma matrix sem as suas igualdades
+ * @param {*} matrix matrix de input para alteração
+ */
 function withdrawResult(matrix){
-    let tempMatrix = createMatrix(sizeRows,sizeCols - 1);
+    let tempMatrix = createMatrix(SIZE_ROWS,SIZE_COLS - 1);
 
     for (let i = 0; i < matrix.length; i++) {
         for (let j = 0; j < matrix[i].length -1; j++) {
@@ -112,7 +187,10 @@ function withdrawResult(matrix){
     return tempMatrix;
 }
 
-
+/**
+ * transforma os nodes de elementos do html em array
+ * @param {*} htmlFormCollection Elementos do html
+ */
 function htmlColletionFromArray(htmlFormCollection){
     let array = [];
     for (const element of htmlFormCollection) {
@@ -123,6 +201,19 @@ function htmlColletionFromArray(htmlFormCollection){
     }
 
     return array;
+}
+
+/**
+ * Define o episilom e se não existir o padrão é 0.05
+ */
+function epsilon(){
+    let inputEpsilon = document.getElementById("epsilon");
+
+    if (!isValid(inputEpsilon)) {
+        return DEFAULT_EPSILON;
+    }
+
+    return isValid(inputEpsilon.value) ? inputEpsilon.value : DEFAULT_EPSILON;  
 }
 
 /**
@@ -164,7 +255,7 @@ function createMatrix(rows,cols){
 function validateMatrix(matrix){
     for (let i = 0; i < matrix.length; i++) {
         for (let j = 0; j < matrix.length; j++) {
-            if (!this.isValid(matrix[i][j])) {
+            if (!this.isValidAndNotNan(matrix[i][j])) {
                 return false;
             }
         }  
@@ -173,6 +264,10 @@ function validateMatrix(matrix){
     return true;
 }
 
+function isValidAndNotNan(value){
+    return this.isValid(value) && !(isNaN(value));
+}
+
 function isValid(value){
-    return (value != undefined && !isNaN(value) && value != null && value != "");
+    return (value != undefined && value != null && value != "");
 }
